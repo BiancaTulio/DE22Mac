@@ -1,0 +1,9 @@
+{
+	"name": "DE22lab1-ADF",
+	"location": "swedencentral",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "c4f85e72-8a7b-46c0-82de-dfb4995147f1",
+		"tenantId": "20e9e658-d844-4d9c-a0b7-36389d71736f"
+	}
+}

@@ -1,0 +1,25 @@
+{
+	"name": "tr_delete_big_files",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "pl_delete",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Day",
+				"interval": 7,
+				"startTime": "2023-09-27T13:27:00",
+				"endTime": "2023-09-29T13:28:50",
+				"timeZone": "W. Europe Standard Time"
+			}
+		}
+	}
+}
