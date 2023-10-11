@@ -1,0 +1,63 @@
+{
+	"name": "CleanupProductName",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "raw",
+						"type": "DatasetReference"
+					},
+					"name": "SSISAssignmentData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "cleaned_data",
+						"type": "DatasetReference"
+					},
+					"name": "CleanedData",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureBlobStorageLab1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "DerivedColumnCleanedProductName"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TransactionID as integer,",
+				"          ProductID as integer,",
+				"          ProductName as string,",
+				"          Quantity as integer,",
+				"          Price as float",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false) ~> SSISAssignmentData",
+				"SSISAssignmentData derive(CleanedProductName = lower(ProductName)) ~> DerivedColumnCleanedProductName",
+				"DerivedColumnCleanedProductName sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TransactionID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          Price as string,",
+				"          TotalAmount as string,",
+				"          CleanedProductName as string",
+				"     ),",
+				"     partitionFileNames:['CleanedData.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> CleanedData"
+			]
+		}
+	}
+}

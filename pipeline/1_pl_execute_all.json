@@ -1,0 +1,104 @@
+{
+	"name": "1_pl_execute_all",
+	"properties": {
+		"activities": [
+			{
+				"name": "1_pl_import_data",
+				"type": "ExecutePipeline",
+				"dependsOn": [],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "1_pl_import_data",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "2_pl_data_cleanup",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "1_pl_import_data",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "2_pl_data_cleanup",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "3_pl_data_merge",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "2_pl_data_cleanup",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "3_pl_data_merge",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "4_pl_conditional_processing",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "3_pl_data_merge",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "4_pl_conditional_processing",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			},
+			{
+				"name": "5_pl_foreach_loop",
+				"type": "ExecutePipeline",
+				"dependsOn": [
+					{
+						"activity": "4_pl_conditional_processing",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"pipeline": {
+						"referenceName": "5_pl_foreach_loop",
+						"type": "PipelineReference"
+					},
+					"waitOnCompletion": true
+				}
+			}
+		],
+		"folder": {
+			"name": "execute"
+		},
+		"annotations": []
+	}
+}

@@ -1,0 +1,82 @@
+{
+	"name": "MergeData",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "part3_cleaned_data",
+						"type": "DatasetReference"
+					},
+					"name": "Part3CleanedData"
+				},
+				{
+					"dataset": {
+						"referenceName": "additional_data",
+						"type": "DatasetReference"
+					},
+					"name": "AdditionalData"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "merged_data",
+						"type": "DatasetReference"
+					},
+					"name": "MergedData",
+					"rejectedDataLinkedService": {
+						"referenceName": "AzureBlobStorageLab1",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "MergeData"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          TransactionID as integer,",
+				"          ProductID as integer,",
+				"          ProductName as string,",
+				"          Quantity as integer,",
+				"          Price as float",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> Part3CleanedData",
+				"source(output(",
+				"          TransactionID as integer,",
+				"          ProductID as integer,",
+				"          ProductName as string,",
+				"          Quantity as integer,",
+				"          Price as float",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     inferDriftedColumnTypes: true,",
+				"     ignoreNoFilesFound: false) ~> AdditionalData",
+				"Part3CleanedData, AdditionalData union(byName: false)~> MergeData",
+				"MergeData sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     input(",
+				"          TransactionID as string,",
+				"          ProductID as string,",
+				"          ProductName as string,",
+				"          Quantity as string,",
+				"          Price as string,",
+				"          TotalAmount as string,",
+				"          CleanedProductName as string",
+				"     ),",
+				"     partitionFileNames:['MergedData.csv'],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> MergedData"
+			]
+		}
+	}
+}
